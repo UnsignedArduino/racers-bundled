@@ -6,14 +6,14 @@ function App(): React.ReactNode {
 
   const simulatorRef = React.useRef<HTMLIFrameElement>(null);
   const [code, setCode] = React.useState("");
-  const [simState, setSimState] = React.useState({});
+  const [simState, setSimState] = React.useState<unknown>({});
 
   React.useEffect(() => {
     try {
       setSimState(JSON.parse(localStorage.getItem("simState") ?? "{}"));
-    } catch (e) {
+    } catch (err: never) {
       console.warn(
-        `Failed to load sim state, maybe first time run or simState is empty?\n${e}`,
+        `Failed to load sim state, maybe first time run or simState is empty?\n${err}`,
       );
       setSimState({});
     }
@@ -48,7 +48,7 @@ function App(): React.ReactNode {
           throw new Error("Failed to load binary.js: text is empty/undefined");
         }
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error(err);
       });
   }, []);
@@ -78,8 +78,9 @@ function App(): React.ReactNode {
       simulatorRef.current?.contentWindow?.postMessage({ type: "stop" });
     }
 
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment */
     function onMessageHandler(event: MessageEvent) {
-      const data = event.data;
+      const data: never = event.data;
       if (data.type == "ready") {
         console.log("Simulator is ready");
         startSim();
@@ -105,9 +106,12 @@ function App(): React.ReactNode {
             }
             break;
           }
+          default:
+            break;
         }
       }
     }
+    /* eslint-enable */
 
     window.addEventListener("message", onMessageHandler, false);
     return () => {
@@ -120,6 +124,7 @@ function App(): React.ReactNode {
       <iframe
         ref={simulatorRef}
         allowFullScreen
+        /* eslint-disable-next-line react-dom/no-unsafe-iframe-sandbox */
         sandbox="allow-popups allow-forms allow-scripts allow-same-origin"
       />
     </>
