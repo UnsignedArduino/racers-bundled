@@ -2,7 +2,7 @@ import "./App.css";
 import * as React from "react";
 
 function App(): React.ReactNode {
-  // TODO: Handle simulator crash (spam menu during first load to test this)
+  // TODO: Toast notifications for start, stop, restart, and crash (if crash than have button to restart) and make them all easily disablable
 
   const simulatorRef = React.useRef<HTMLIFrameElement>(null);
   const [code, setCode] = React.useState("");
@@ -81,6 +81,9 @@ function App(): React.ReactNode {
     /* eslint-disable @typescript-eslint/no-unsafe-assignment */
     function onMessageHandler(event: MessageEvent) {
       const data: any = event.data;
+      // if (data.type !== "messagepacket") {
+      //   alert(JSON.stringify(data));
+      // }
       if (data.type == "ready") {
         console.log("Simulator is ready");
         startSim();
@@ -109,6 +112,10 @@ function App(): React.ReactNode {
           default:
             break;
         }
+      } else if (data.type == "debugger" && data.subtype == "breakpoint") {
+        // Error most likely
+        // TODO: Proper toast notification as detailed above
+        alert("It looks like the game may have crashed! To restart the game, press the backspace key.");
       }
     }
     /* eslint-enable */
