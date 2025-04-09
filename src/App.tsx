@@ -39,7 +39,8 @@ function App(): React.ReactNode {
           );
           setCode(text);
           if (simulatorRef.current) {
-            simulatorRef.current.src = "---simulator.html";
+            simulatorRef.current.src =
+              "---simulator.html?hideSimButtons=1&noExtraPadding=1&fullscreen=1&autofocus=1&nofooter=1";
           } else {
             console.error("Simulator iframe ref is null");
           }
