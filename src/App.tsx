@@ -24,7 +24,7 @@ function App(): React.ReactNode {
   }, [simState]);
 
   React.useEffect(() => {
-    fetch("./binary.js")
+    fetch("binary.js")
       .then((res) => {
         if (res.ok) {
           return res.text();
@@ -39,8 +39,7 @@ function App(): React.ReactNode {
           );
           setCode(text);
           if (simulatorRef.current) {
-            simulatorRef.current.src =
-              "https://trg-arcade.userpxt.io/---simulator";
+            simulatorRef.current.src = "---simulator.html";
           } else {
             console.error("Simulator iframe ref is null");
           }
@@ -56,32 +55,26 @@ function App(): React.ReactNode {
   React.useEffect(() => {
     function startSim() {
       console.log("Starting simulator");
-      simulatorRef.current?.contentWindow?.postMessage(
-        {
-          type: "run",
-          parts: [],
-          code,
-          partDefinitions: [],
-          cdnUrl: "https://cdn.makecode.com",
-          // version:
-          storedState: simState,
-          frameCounter: 1,
-          options: {
-            theme: "green",
-            player: "",
-          },
-          id: `green-${Math.random()}`,
+      simulatorRef.current?.contentWindow?.postMessage({
+        type: "run",
+        parts: [],
+        code,
+        partDefinitions: [],
+        // cdnUrl: "https://cdn.makecode.com",
+        // version: "",
+        storedState: simState,
+        frameCounter: 1,
+        options: {
+          theme: "green",
+          player: "",
         },
-        "https://trg-arcade.userpxt.io/---simulator",
-      );
+        id: `green-${Math.random()}`,
+      });
     }
 
     function stopSim() {
       console.log("Stopping simulator");
-      simulatorRef.current?.contentWindow?.postMessage(
-        { type: "stop" },
-        "https://trg-arcade.userpxt.io/---simulator",
-      );
+      simulatorRef.current?.contentWindow?.postMessage({ type: "stop" });
     }
 
     function onMessageHandler(event: MessageEvent) {
