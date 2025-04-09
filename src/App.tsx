@@ -11,7 +11,7 @@ function App(): React.ReactNode {
   React.useEffect(() => {
     try {
       setSimState(JSON.parse(localStorage.getItem("simState") ?? "{}"));
-    } catch (err: never) {
+    } catch (err: any) {
       console.warn(
         `Failed to load sim state, maybe first time run or simState is empty?\n${err}`,
       );
@@ -80,7 +80,7 @@ function App(): React.ReactNode {
 
     /* eslint-disable @typescript-eslint/no-unsafe-assignment */
     function onMessageHandler(event: MessageEvent) {
-      const data: never = event.data;
+      const data: any = event.data;
       if (data.type == "ready") {
         console.log("Simulator is ready");
         startSim();
