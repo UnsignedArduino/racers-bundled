@@ -191,14 +191,15 @@ function App(): React.ReactNode {
   }, []);
 
   return (
-    <>
+    <div>
       <iframe
         ref={simulatorRef}
         allowFullScreen
         /* eslint-disable-next-line react-dom/no-unsafe-iframe-sandbox */
         sandbox="allow-popups allow-forms allow-scripts allow-same-origin"
       />
-    </>
+      {/*<div id="stats">Test</div>*/}
+    </div>
   );
 }
 
