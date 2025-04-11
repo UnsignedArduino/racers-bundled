@@ -7,11 +7,13 @@ import {
 } from "./utils/toasts";
 import { toast } from "react-toastify";
 import { GameConfiguration } from "./gameConfiguration.ts";
+import { positionFixedElement } from "./utils/position.ts";
 
 function App(): React.ReactNode {
   // TODO: Show message when no keyboard focus
 
   const simulatorRef = React.useRef<HTMLIFrameElement>(null);
+  const statsRef = React.useRef<HTMLDivElement>(null);
   const [code, setCode] = React.useState("");
   const [simState, setSimState] = React.useState<unknown>({});
 
@@ -182,8 +184,14 @@ function App(): React.ReactNode {
         simulatorRef.current?.contentDocument?.getElementById(
           "debug-stats",
         )?.innerText;
-      console.log(`Debug stats: ${statsText}`);
-    }, 1000);
+      if (statsRef.current) {
+        positionFixedElement(
+          statsRef.current,
+          GameConfiguration.SHOW_STATS_LOCATION,
+        );
+        statsRef.current.innerText = statsText ?? "";
+      }
+    }, 100);
 
     return () => {
       clearInterval(checkStatsId);
@@ -198,7 +206,7 @@ function App(): React.ReactNode {
         /* eslint-disable-next-line react-dom/no-unsafe-iframe-sandbox */
         sandbox="allow-popups allow-forms allow-scripts allow-same-origin"
       />
-      {/*<div id="stats">Test</div>*/}
+      <div ref={statsRef} id="stats" hidden={!GameConfiguration.SHOW_STATS} />
     </div>
   );
 }

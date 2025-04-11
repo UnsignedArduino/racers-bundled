@@ -1,16 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ToastContainer, Bounce } from "react-toastify";
+import { Bounce, ToastContainer } from "react-toastify";
 import App from "./App.tsx";
+import { GameConfiguration } from "./gameConfiguration.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
     <ToastContainer
-      position="bottom-right"
+      position={GameConfiguration.TOAST_POSITION}
       autoClose={5000}
       hideProgressBar={false}
-      newestOnTop
+      newestOnTop={GameConfiguration.TOAST_POSITION.includes("bottom")}
       closeOnClick={false}
       rtl={false}
       pauseOnFocusLoss
