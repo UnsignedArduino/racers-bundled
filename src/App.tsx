@@ -2,7 +2,7 @@ import "./App.css";
 import * as React from "react";
 
 function App(): React.ReactNode {
-  // TODO: Toast notifications for start, stop, restart, and crash (if crash than have button to restart) and make them all easily disablable
+  // TODO: Toast notifications for start, stop, restart, and crash (if crash than have button to restart), all configurable
 
   const simulatorRef = React.useRef<HTMLIFrameElement>(null);
   const [code, setCode] = React.useState("");
@@ -11,8 +11,9 @@ function App(): React.ReactNode {
   React.useEffect(() => {
     try {
       setSimState(JSON.parse(localStorage.getItem("simState") ?? "{}"));
-    } catch (err: any) {
+    } catch (err) {
       console.warn(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Failed to load sim state, maybe first time run or simState is empty?\n${err}`,
       );
       setSimState({});
@@ -78,12 +79,13 @@ function App(): React.ReactNode {
       simulatorRef.current?.contentWindow?.postMessage({ type: "stop" });
     }
 
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+    /* eslint-disable */
     function onMessageHandler(event: MessageEvent) {
       const data: any = event.data;
       // if (data.type !== "messagepacket") {
       //   alert(JSON.stringify(data));
       // }
+      // console.log(data);
       if (data.type == "ready") {
         console.log("Simulator is ready");
         startSim();
@@ -98,11 +100,13 @@ function App(): React.ReactNode {
           case "setstate": {
             if (data.stateValue === null) {
               setSimState({
+                // @ts-ignore
                 ...simState,
                 [data.stateKey]: undefined,
               });
             } else {
               setSimState({
+                // @ts-ignore
                 ...simState,
                 [data.stateKey]: data.stateValue,
               });
@@ -115,7 +119,11 @@ function App(): React.ReactNode {
       } else if (data.type == "debugger" && data.subtype == "breakpoint") {
         // Error most likely
         // TODO: Proper toast notification as detailed above
-        alert("It looks like the game may have crashed! To restart the game, press the backspace key.");
+        console.error("Simulator may have crashed!");
+        console.error(data);
+        alert(
+          "It looks like the game may have crashed! To restart the game, press the backspace key.",
+        );
       }
     }
     /* eslint-enable */
@@ -125,6 +133,35 @@ function App(): React.ReactNode {
       window.removeEventListener("message", onMessageHandler, false);
     };
   }, [code, simState]);
+
+  React.useEffect(() => {
+    const checkStatsId = setInterval(() => {
+      if (!simulatorRef.current) {
+        console.error("Simulator iframe ref is null");
+        return;
+      }
+
+      const iframeDocument = simulatorRef.current.contentDocument;
+      if (!iframeDocument) {
+        console.error("Unable to access iframe document");
+        return;
+      }
+
+      const debugStatsDiv = iframeDocument.getElementById("debug-stats");
+      if (!debugStatsDiv) {
+        console.error("Element with ID 'debug-stats' not found in iframe");
+        return;
+      }
+
+      // TODO: Be able to have space at bottom of screen for this text, or have overlay in a corner (all configurable)
+      const statsText = debugStatsDiv.innerText;
+      console.log(`Debug stats: ${statsText}`);
+    }, 1000);
+
+    return () => {
+      clearInterval(checkStatsId);
+    };
+  }, []);
 
   return (
     <>
