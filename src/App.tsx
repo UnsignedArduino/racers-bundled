@@ -136,25 +136,11 @@ function App(): React.ReactNode {
 
   React.useEffect(() => {
     const checkStatsId = setInterval(() => {
-      if (!simulatorRef.current) {
-        console.error("Simulator iframe ref is null");
-        return;
-      }
-
-      const iframeDocument = simulatorRef.current.contentDocument;
-      if (!iframeDocument) {
-        console.error("Unable to access iframe document");
-        return;
-      }
-
-      const debugStatsDiv = iframeDocument.getElementById("debug-stats");
-      if (!debugStatsDiv) {
-        console.error("Element with ID 'debug-stats' not found in iframe");
-        return;
-      }
-
       // TODO: Be able to have space at bottom of screen for this text, or have overlay in a corner (all configurable)
-      const statsText = debugStatsDiv.innerText;
+      const statsText =
+        simulatorRef.current?.contentDocument?.getElementById(
+          "debug-stats",
+        )?.innerText;
       console.log(`Debug stats: ${statsText}`);
     }, 1000);
 
