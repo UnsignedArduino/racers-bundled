@@ -1,14 +1,15 @@
 import "./App.css";
 import * as React from "react";
 import {
+  createEmptyLoadingToastCallbacks,
   loadingToast,
   LoadingToastCallbacks,
-  createEmptyLoadingToastCallbacks,
 } from "./utils/toasts";
 import { toast } from "react-toastify";
+import { GameConfiguration } from "./gameConfiguration.ts";
 
 function App(): React.ReactNode {
-  // TODO: Toast notifications for start, stop, restart, and crash (if crash than have button to restart), all configurable
+  // TODO: Show message when no keyboard focus
 
   const simulatorRef = React.useRef<HTMLIFrameElement>(null);
   const [code, setCode] = React.useState("");
@@ -38,11 +39,14 @@ function App(): React.ReactNode {
   }, [simState]);
 
   React.useEffect(() => {
-    loadingGameToastCallbacksRef.current = loadingToast(
-      "Loading game...",
-      "Game loaded!",
-      "Failed to load game! Reload the page to try again.",
-    );
+    loadingGameToastCallbacksRef.current =
+      GameConfiguration.ENABLE_LOADING_GAME_TOAST
+        ? loadingToast(
+            "Loading game...",
+            "Game loaded!",
+            "Failed to load game! Reload the page to try again.",
+          )
+        : createEmptyLoadingToastCallbacks();
     fetch("binary.js")
       .then((res) => {
         if (res.ok) {
@@ -113,14 +117,19 @@ function App(): React.ReactNode {
         switch (data.command) {
           case "restart": {
             console.log("Simulator requested restart");
-            restartGameToastCallbacksRef.current = loadingToast(
-              "Restarting game...",
-              "Game restarted!",
-              "Failed to restart game! Reload the page to try again.",
-            );
+            restartGameToastCallbacksRef.current =
+              GameConfiguration.ENABLE_RESTARTING_GAME_TOAST
+                ? loadingToast(
+                    "Restarting game...",
+                    "Game restarted!",
+                    "Failed to restart game! Reload the page to try again.",
+                  )
+                : createEmptyLoadingToastCallbacks();
             stopSim();
-            startSim();
-            restartGameToastCallbacksRef.current.success();
+            setTimeout(() => {
+              startSim();
+              restartGameToastCallbacksRef.current.success();
+            }, 200);
             break;
           }
           case "setstate": {
@@ -146,15 +155,16 @@ function App(): React.ReactNode {
         // Error most likely
         console.error("Simulator may have crashed!");
         console.error(data);
-        // alert(
-        //   "It looks like the game may have crashed! To restart the game, press the backspace key.",
-        // );
-        toast.error(
-          "It looks like the game may have crashed! To restart the game, press the backspace key.",
-          {
-            autoClose: 10000,
-          },
-        );
+        if (GameConfiguration.ENABLE_POSSIBLE_GAME_CRASH_TOAST) {
+          toast.error(
+            "It looks like the game may have crashed! To restart the game, press the backspace key.",
+            {
+              autoClose: GameConfiguration.POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE,
+              closeOnClick:
+                GameConfiguration.POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK,
+            },
+          );
+        }
       }
     }
     /* eslint-enable */
