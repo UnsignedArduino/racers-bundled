@@ -151,9 +151,6 @@ function App(): React.ReactNode {
 
   return (
     <>
-      <head>
-        <title>Racers! v1.3.2 by UnsignedArduino</title>
-      </head>
       <iframe
         ref={simulatorRef}
         allowFullScreen
