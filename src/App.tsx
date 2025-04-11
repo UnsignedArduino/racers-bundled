@@ -41,14 +41,14 @@ function App(): React.ReactNode {
   }, [simState]);
 
   React.useEffect(() => {
-    loadingGameToastCallbacksRef.current =
-      GameConfiguration.ENABLE_LOADING_GAME_TOAST
-        ? loadingToast(
-            "Loading game...",
-            "Game loaded!",
-            "Failed to load game! Reload the page to try again.",
-          )
-        : createEmptyLoadingToastCallbacks();
+    loadingGameToastCallbacksRef.current = GameConfiguration.Toasts
+      .ENABLE_LOADING_GAME_TOAST
+      ? loadingToast(
+          "Loading game...",
+          "Game loaded!",
+          "Failed to load game! Reload the page to try again.",
+        )
+      : createEmptyLoadingToastCallbacks();
     fetch("binary.js")
       .then((res) => {
         if (res.ok) {
@@ -119,19 +119,19 @@ function App(): React.ReactNode {
         switch (data.command) {
           case "restart": {
             console.log("Simulator requested restart");
-            restartGameToastCallbacksRef.current =
-              GameConfiguration.ENABLE_RESTARTING_GAME_TOAST
-                ? loadingToast(
-                    "Restarting game...",
-                    "Game restarted!",
-                    "Failed to restart game! Reload the page to try again.",
-                  )
-                : createEmptyLoadingToastCallbacks();
+            restartGameToastCallbacksRef.current = GameConfiguration.Toasts
+              .ENABLE_RESTARTING_GAME_TOAST
+              ? loadingToast(
+                  "Restarting game...",
+                  "Game restarted!",
+                  "Failed to restart game! Reload the page to try again.",
+                )
+              : createEmptyLoadingToastCallbacks();
             stopSim();
             setTimeout(() => {
               startSim();
               restartGameToastCallbacksRef.current.success();
-            }, 200);
+            }, 500);
             break;
           }
           case "setstate": {
@@ -157,13 +157,15 @@ function App(): React.ReactNode {
         // Error most likely
         console.error("Simulator may have crashed!");
         console.error(data);
-        if (GameConfiguration.ENABLE_POSSIBLE_GAME_CRASH_TOAST) {
+        if (GameConfiguration.Toasts.ENABLE_POSSIBLE_GAME_CRASH_TOAST) {
           toast.error(
             "It looks like the game may have crashed! To restart the game, press the backspace key.",
             {
-              autoClose: GameConfiguration.POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE,
+              autoClose:
+                GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE,
               closeOnClick:
-                GameConfiguration.POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK,
+                GameConfiguration.Toasts
+                  .POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK,
             },
           );
         }
@@ -179,7 +181,6 @@ function App(): React.ReactNode {
 
   React.useEffect(() => {
     const checkStatsId = setInterval(() => {
-      // TODO: Be able to have space at bottom of screen for this text, or have overlay in a corner (all configurable)
       const statsText =
         simulatorRef.current?.contentDocument?.getElementById(
           "debug-stats",
@@ -187,7 +188,7 @@ function App(): React.ReactNode {
       if (statsRef.current) {
         positionFixedElement(
           statsRef.current,
-          GameConfiguration.SHOW_STATS_LOCATION,
+          GameConfiguration.DebugStats.STATS_LOCATION,
         );
         statsRef.current.innerText = statsText ?? "";
       }
@@ -206,7 +207,19 @@ function App(): React.ReactNode {
         /* eslint-disable-next-line react-dom/no-unsafe-iframe-sandbox */
         sandbox="allow-popups allow-forms allow-scripts allow-same-origin"
       />
-      <div ref={statsRef} id="stats" hidden={!GameConfiguration.SHOW_STATS} />
+      <div
+        ref={statsRef}
+        style={{
+          fontFamily: "monospace",
+          fontSize: GameConfiguration.DebugStats.STATS_FONT_SIZE,
+          position: "fixed",
+          background: GameConfiguration.DebugStats.STATS_BACKGROUND_COLOR,
+          color: GameConfiguration.DebugStats.STATS_FOREGROUND_COLOR,
+          padding: GameConfiguration.DebugStats.STATS_PADDING,
+          zIndex: 1000,
+        }}
+        hidden={!GameConfiguration.DebugStats.SHOW_STATS}
+      />
     </div>
   );
 }
