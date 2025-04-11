@@ -13,9 +13,20 @@ export namespace GameConfiguration {
     export const TOAST_THEME: Theme = "dark";
 
     export const ENABLE_LOADING_GAME_TOAST = true;
+    export const LOADING_GAME_TOAST_PENDING_MSG = "Loading game...";
+    export const LOADING_GAME_TOAST_SUCCESS_MSG = "Game loaded!";
+    export const LOADING_GAME_TOAST_ERROR_MSG =
+      "Failed to load game! Reload to try again.";
+
     export const ENABLE_RESTARTING_GAME_TOAST = true;
+    export const RESTARTING_GAME_TOAST_PENDING_MSG = "Restarting game...";
+    export const RESTARTING_GAME_TOAST_SUCCESS_MSG = "Game restarted!";
+    export const RESTARTING_GAME_TOAST_ERROR_MSG =
+      "Failed to restart game! Reload to try again.";
 
     export const ENABLE_POSSIBLE_GAME_CRASH_TOAST = true;
+    export const POSSIBLE_GAME_CRASH_TOAST_MSG =
+      "It looks like the game may have crashed! To restart the game, press the backspace key.";
     export const POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE: false | number = 30000;
     export const POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK = false;
   }

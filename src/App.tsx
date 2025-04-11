@@ -44,9 +44,9 @@ function App(): React.ReactNode {
     loadingGameToastCallbacksRef.current = GameConfiguration.Toasts
       .ENABLE_LOADING_GAME_TOAST
       ? loadingToast(
-          "Loading game...",
-          "Game loaded!",
-          "Failed to load game! Reload the page to try again.",
+          GameConfiguration.Toasts.LOADING_GAME_TOAST_PENDING_MSG,
+          GameConfiguration.Toasts.LOADING_GAME_TOAST_SUCCESS_MSG,
+          GameConfiguration.Toasts.LOADING_GAME_TOAST_ERROR_MSG,
         )
       : createEmptyLoadingToastCallbacks();
     fetch("binary.js")
@@ -122,9 +122,9 @@ function App(): React.ReactNode {
             restartGameToastCallbacksRef.current = GameConfiguration.Toasts
               .ENABLE_RESTARTING_GAME_TOAST
               ? loadingToast(
-                  "Restarting game...",
-                  "Game restarted!",
-                  "Failed to restart game! Reload the page to try again.",
+                  GameConfiguration.Toasts.RESTARTING_GAME_TOAST_PENDING_MSG,
+                  GameConfiguration.Toasts.RESTARTING_GAME_TOAST_SUCCESS_MSG,
+                  GameConfiguration.Toasts.RESTARTING_GAME_TOAST_ERROR_MSG,
                 )
               : createEmptyLoadingToastCallbacks();
             stopSim();
@@ -158,16 +158,12 @@ function App(): React.ReactNode {
         console.error("Simulator may have crashed!");
         console.error(data);
         if (GameConfiguration.Toasts.ENABLE_POSSIBLE_GAME_CRASH_TOAST) {
-          toast.error(
-            "It looks like the game may have crashed! To restart the game, press the backspace key.",
-            {
-              autoClose:
-                GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE,
-              closeOnClick:
-                GameConfiguration.Toasts
-                  .POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK,
-            },
-          );
+          toast.error(GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_MSG, {
+            autoClose:
+              GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE,
+            closeOnClick:
+              GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK,
+          });
         }
       }
     }
