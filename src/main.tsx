@@ -13,7 +13,7 @@ createRoot(document.getElementById("root")!).render(
       hideProgressBar={GameConfiguration.Toasts.TOAST_HIDE_PROGRESS_BAR}
       newestOnTop={GameConfiguration.Toasts.TOAST_NEWEST_ON_TOP}
       closeOnClick={GameConfiguration.Toasts.TOAST_CLOSE_ON_CLICK}
-      rtl={false}
+      rtl={GameConfiguration.Toasts.TOAST_RTL}
       pauseOnFocusLoss={GameConfiguration.Toasts.TOAST_PAUSE_ON_FOCUS_LOSS}
       draggable={false}
       pauseOnHover={GameConfiguration.Toasts.TOAST_PAUSE_ON_HOVER}
