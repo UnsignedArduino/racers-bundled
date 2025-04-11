@@ -8,8 +8,8 @@ export namespace GameConfiguration {
     export const TOAST_HIDE_PROGRESS_BAR = false;
     export const TOAST_NEWEST_ON_TOP = TOAST_POSITION.includes("bottom");
     export const TOAST_CLOSE_ON_CLICK = false;
-    export const TOAST_PAUSE_ON_FOCUS_LOSS = true;
-    export const TOAST_PAUSE_ON_HOVER = true;
+    export const TOAST_PAUSE_ON_FOCUS_LOSS = false;
+    export const TOAST_PAUSE_ON_HOVER = false;
     export const TOAST_THEME: Theme = "dark";
 
     export const ENABLE_LOADING_GAME_TOAST = true;
@@ -25,8 +25,10 @@ export namespace GameConfiguration {
       "Failed to restart game! Reload to try again.";
 
     export const ENABLE_POSSIBLE_GAME_CRASH_TOAST = true;
-    export const POSSIBLE_GAME_CRASH_TOAST_MSG =
-      "It looks like the game may have crashed! To restart the game, press the backspace key.";
+    export const POSSIBLE_GAME_CRASH_TOAST_BEGINNING_MSG =
+      "It looks like the game may have crashed! To restart the game, press the backspace key or click ";
+    export const POSSIBLE_GAME_CRASH_TOAST_RESTART_BTN_MSG = "here";
+    export const POSSIBLE_GAME_CRASH_TOAST_END_MSG = ".";
     export const POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE: false | number = 30000;
     export const POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK = false;
   }

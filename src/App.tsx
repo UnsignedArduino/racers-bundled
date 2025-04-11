@@ -158,12 +158,54 @@ function App(): React.ReactNode {
         console.error("Simulator may have crashed!");
         console.error(data);
         if (GameConfiguration.Toasts.ENABLE_POSSIBLE_GAME_CRASH_TOAST) {
-          toast.error(GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_MSG, {
-            autoClose:
-              GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE,
-            closeOnClick:
-              GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK,
-          });
+          toast.error(
+            ({ closeToast }) => {
+              return (
+                <div>
+                  {
+                    GameConfiguration.Toasts
+                      .POSSIBLE_GAME_CRASH_TOAST_BEGINNING_MSG
+                  }
+                  <button
+                    type="button"
+                    onClick={() => {
+                      console.log("Restarting simulator after crash");
+                      closeToast();
+                      restartGameToastCallbacksRef.current = GameConfiguration
+                        .Toasts.ENABLE_RESTARTING_GAME_TOAST
+                        ? loadingToast(
+                            GameConfiguration.Toasts
+                              .RESTARTING_GAME_TOAST_PENDING_MSG,
+                            GameConfiguration.Toasts
+                              .RESTARTING_GAME_TOAST_SUCCESS_MSG,
+                            GameConfiguration.Toasts
+                              .RESTARTING_GAME_TOAST_ERROR_MSG,
+                          )
+                        : createEmptyLoadingToastCallbacks();
+                      stopSim();
+                      setTimeout(() => {
+                        startSim();
+                        restartGameToastCallbacksRef.current.success();
+                      }, 500);
+                    }}
+                  >
+                    {
+                      GameConfiguration.Toasts
+                        .POSSIBLE_GAME_CRASH_TOAST_RESTART_BTN_MSG
+                    }
+                  </button>
+                  {GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_END_MSG}
+                </div>
+              );
+            },
+            {
+              autoClose:
+                GameConfiguration.Toasts.POSSIBLE_GAME_CRASH_TOAST_AUTOCLOSE,
+              closeOnClick:
+                GameConfiguration.Toasts
+                  .POSSIBLE_GAME_CRASH_TOAST_CLOSE_ON_CLICK,
+            },
+          );
         }
       }
     }
