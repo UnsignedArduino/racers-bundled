@@ -44,4 +44,11 @@ export namespace GameConfiguration {
     export const STATS_FOREGROUND_COLOR = "white";
     export const STATS_PADDING = "10px";
   }
+
+  export namespace FocusDetector {
+    export const ENABLE_FOCUS_DETECTOR = true;
+    export const FOCUS_DETECTOR_BACKGROUND_COLOR = "rgba(0, 0, 0, 0.5)";
+    export const FOCUS_DETECTOR_FOREGROUND_COLOR = "white";
+    export const FOCUS_DETECTOR_FONT_SIZE = "max(5vh, 24px)";
+  }
 }

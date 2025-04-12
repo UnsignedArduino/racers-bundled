@@ -10,8 +10,6 @@ import { GameConfiguration } from "./gameConfiguration.ts";
 import { positionFixedElement } from "./utils/position.ts";
 
 function App(): React.ReactNode {
-  // TODO: Show message when no keyboard focus
-
   const simulatorRef = React.useRef<HTMLIFrameElement>(null);
   const statsRef = React.useRef<HTMLDivElement>(null);
   const [code, setCode] = React.useState("");
@@ -23,6 +21,7 @@ function App(): React.ReactNode {
   const restartGameToastCallbacksRef = React.useRef<LoadingToastCallbacks>(
     createEmptyLoadingToastCallbacks(),
   );
+  const [showNoFocusMessage, setShowNoFocusMessage] = React.useState(false);
 
   React.useEffect(() => {
     try {
@@ -237,6 +236,23 @@ function App(): React.ReactNode {
     };
   }, []);
 
+  React.useEffect(() => {
+    if (!GameConfiguration.FocusDetector.ENABLE_FOCUS_DETECTOR) {
+      return;
+    }
+
+    const checkFocusID = setInterval(() => {
+      setShowNoFocusMessage(
+        !document.hasFocus() ||
+          !simulatorRef.current?.contentDocument?.hasFocus(),
+      );
+    }, 100);
+
+    return () => {
+      clearInterval(checkFocusID);
+    };
+  });
+
   return (
     <div>
       <iframe
@@ -245,6 +261,37 @@ function App(): React.ReactNode {
         /* eslint-disable-next-line react-dom/no-unsafe-iframe-sandbox */
         sandbox="allow-popups allow-forms allow-scripts allow-same-origin"
       />
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor:
+            GameConfiguration.FocusDetector.FOCUS_DETECTOR_BACKGROUND_COLOR,
+          pointerEvents: "none",
+          zIndex: 1001,
+        }}
+        hidden={!showNoFocusMessage}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            fontFamily: "monospace",
+            textAlign: "center",
+            color:
+              GameConfiguration.FocusDetector.FOCUS_DETECTOR_FOREGROUND_COLOR,
+            fontSize: GameConfiguration.FocusDetector.FOCUS_DETECTOR_FONT_SIZE,
+            pointerEvents: "none",
+          }}
+        >
+          Game not receiving input
+        </div>
+      </div>
       <div
         ref={statsRef}
         style={{
